@@ -1,4 +1,0 @@
-
-swapLock(){
-    mv ~/bin/ellielaunch ~/bin/tmp && mv ~/bin/other ~/bin/ellielaunch && mv ~/bin/tmp ~/bin/other
-}

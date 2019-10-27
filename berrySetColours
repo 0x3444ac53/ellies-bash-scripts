@@ -1,8 +1,0 @@
-
-setcolors(){
-                source ~/.cache/wal/colors.sh
-                berryc focus_color ${color2:1}
-                berryc unfocus_color ${color5:1}
-                berryc inner_focus_color ${color0:1}
-                berryc inner_unfocus_color ${color5:1}
-            }
