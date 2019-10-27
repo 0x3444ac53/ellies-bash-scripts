@@ -2,6 +2,8 @@
 
 Everything here is a function definition and anything you run will need to be modified
 
+also I use zsh, and do not promise compatability
+
 To run modules you need to source them
 
 ```bash
