@@ -7,5 +7,5 @@ for i in $(xdotool getmouselocation);
 done 
 id="$id "; id="${id:6:-1}"; echo FOUND; sleep 5
 xdotool key --window "$id" Escape 
-xdotool mousedown --window "$id" 3
+xdotool mousedown --window "$id" 1
 }

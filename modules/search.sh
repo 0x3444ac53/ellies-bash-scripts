@@ -22,5 +22,6 @@ search(){
         esac
     fi
     echo "$*" > searchy
-    surf "$(printf "$url" "$(sed -e 's/ /+/g' searchy)")$searchoptions" 2>/dev/null &
+    firefox "$(printf "$url" "$(sed -e 's/ /+/g' searchy)")$searchoptions" 2>/dev/null &
 }
+

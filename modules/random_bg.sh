@@ -1,6 +1,13 @@
 set_bg(){
     image=$1
     feh --bg-fill "$image"
+    echo $image > /home/ellie/.wallpaper
+}
+cycle_folder(){
+    for i in $(ls $1)
+    do set_bg $1/$i
+        read t
+    done
 }
 random_bg(){
     image=$(get_random_image)
@@ -14,11 +21,19 @@ random_bg(){
     esac
     set_bg $image
     echo $image
+    wal -i "$image"
+    touch /home/ellie/repos/st/config.h
+    sudo make install -C /home/ellie/repos/st/
 }
 get_random_image(){
     walldir=$(cat /home/ellie/.config/rendom_bg/'dirs' | shuf -n 1)
     echo "$walldir/$(ls $walldir | shuf -n 1)"
 }
 add_favourite_background(){
-    grep -Fxq "$image" /home/ellie/bin/favourite\ png\'s.txt && echo "image saved" || echo $image >> /home/ellie/bin/favourite\ png\'s.txt 
+    image=$(cat /home/ellie/.wallpaper | head -n 1)
+    grep -Fxq $image /home/ellie/bin/favourite\ png\'s.txt && echo "image already saved" || echo $image >> /home/ellie/bin/favourite\ png\'s.txt
+}
+remove_favourite_background(){
+    sed "s:$(cat /home/ellie/.wallpaper): :g" "/home/ellie/bin/favourite png's.txt"
+    sed "/^ /d" "/home/ellie/bin/favourite png's.txt"
 }
