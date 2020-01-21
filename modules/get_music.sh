@@ -1,8 +1,8 @@
 get_music(){
-    currentDir=$(pwd)
-    artist="$1"
-    album="$2"
-    url="$3"
+    local currentDir=$(pwd)
+    local artist="$1"
+    local album="$2"
+    local url="$3"
     cd /home/ellie/music 
     cd "$artist" || mkcdir "$artist"
     cd "$album" || mkcdir "$album"

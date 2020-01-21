@@ -2,10 +2,16 @@ set_bg(){
     image=$1
     feh --bg-fill "$image"
     echo $image > /home/ellie/.wallpaper
+    echo $image
+    wal -i "$image" --backend colorz
+    touch /home/ellie/repos/st/config.h
+    sudo make install -C /home/ellie/repos/st/
+    st -e pika.sh
 }
 cycle_folder(){
     for i in $(ls $1)
     do set_bg $1/$i
+        wal -i "$image"
         read t
     done
 }
@@ -20,10 +26,6 @@ random_bg(){
             ;;
     esac
     set_bg $image
-    echo $image
-    wal -i "$image"
-    touch /home/ellie/repos/st/config.h
-    sudo make install -C /home/ellie/repos/st/
 }
 get_random_image(){
     walldir=$(cat /home/ellie/.config/rendom_bg/'dirs' | shuf -n 1)

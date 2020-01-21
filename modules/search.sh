@@ -21,5 +21,5 @@ function search {
     else
         searchTerm="$*"
     fi
-    firefox "$(printf "${site}%s" "$(echo "$searchTerm" | tr ' ' '+')")" &
+    firefox "$(printf "${site}%s" "$(echo "$searchTerm" | tr ' ' '+')")" 2>/dev/null &
 }
