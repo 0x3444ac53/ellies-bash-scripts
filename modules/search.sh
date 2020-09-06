@@ -1,25 +1,62 @@
-function search {
-    local searchTerm
-    local site
-    site="https://google.com/search?q="
+,search(){
+  local site
+    local pdfflag=''
+    site="https://google.com/search?q=%s"
     if [[ "$1" == -* ]]; then
         case $1 in
             "-y"|"--youtube")
-                site="https://www.youtube.com/results?search_query="
+                site="https://www.youtube.com/results?search_query=%s"
                 ;;
             "-g"|"--google")
-                site="https://www.google.com/search?q="
+                site="https://www.google.com/search?q=%s"
                 ;;
+            "-w"|"--wikipedia")
+                site="https://en.wikipedia.org/w/index.php?search=%s"
+                ;;
+            "-p"|"--philosophy")
+                site="https://plato.stanford.edu/search/searcher.py?query=%s~"
+		            pdfflag="kasldj"
+                ;;
+            "-lg"|"--libgen")
+                site="https://libgen.is/search.php?req=%s&open=0&res=100&view=detailed"
+                ;;
+ 	          "-al"|"--anarchist-library")
+		            site="http://theanarchistlibrary.org/search?query=%s"
+		            ;;
             *)
-                echo "unrecognised "$1""
+                echo "unrecognised "$1" defaulting to search engine"
                 ;;
         esac
         shift
     fi
+    local domain="$(echo "$site" | awk -F/ '{print $3}')"
     if [[ "$*" == "" ]]; then
-        searchTerm=$(dmenu -p "Search: " < <())
+	    searchTerm=$(rofi -dmenu -p "Search: " < <(_search_hist_management "$domain"))
     else
         searchTerm="$*"
     fi
-    firefox "$(printf "${site}%s" "$(echo "$searchTerm" | tr ' ' '+')")" 2>/dev/null &
+    if ! [ -n "$searchTerm" ]; then
+	    return 0
+    fi
+    _search_hist_management "$domain" "$searchTerm"
+    if [ -z $pdfflag ]; then
+    	google-chrome-stable "$(printf "$site" "$(echo "$searchTerm" | tr ' ' '+')")" 2>/dev/null &
+    else
+	    local url="$(printf "$site" "$(echo "$searchTerm" | tr ' ' '+')")"
+	    eval "_asdfgh $(rofi -dmenu -p ":" < <(echo "$url" | python3 -c "import requests; from bs4 import BeautifulSoup; url = input(); [print('\\\"' + i.find('div', {'class' : 'result_title'}).a.text.replace('\n', '') + '\\\"' + ' ' + '\\\"' + i.find('div', {'class' : 'result_title'}).a['href'].split('&')[0].replace('search/r?entry=/', '') + '\\\"') for i in BeautifulSoup(requests.get(url).text).findAll('div', {'class': 'result_listing'})]"))"
+    fi
 }
+function _asdfgh {
+	pandoc -s -r html "$2" --pdf-engine=xelatex -o /tmp/meh.pdf &&
+    evince /tmp/meh.pdf
+}
+function _search_hist_management {
+    local historyFiles='/home/ellie/.config/,search'
+    [ -f "$historyFiles/$1" ] || touch "$historyFiles/$1" ]
+    if (( $# == 1 )); then
+	    tr '\n' $'\n' < "$historyFiles/$1" | tac | paste -s -d '\n'
+    elif (( $# == 2 )); then
+	    echo "$2" >> $historyFiles/$1
+    fi
+}
+
