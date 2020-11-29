@@ -1,6 +1,6 @@
-,search(){
+#!/bin/zsh
+elliesearch(){
   local site
-    local pdfflag=''
     site="https://google.com/search?q=%s"
     if [[ "$1" == -* ]]; then
         case $1 in
@@ -31,7 +31,7 @@
     fi
     local domain="$(echo "$site" | awk -F/ '{print $3}')"
     if [[ "$*" == "" ]]; then
-	    searchTerm=$(rofi -dmenu -p "Search: " < <(_search_hist_management "$domain"))
+	    searchTerm=$(fzf --layout=reverse --prompt="Search: " < <(_search_hist_management "$domain"))
     else
         searchTerm="$*"
     fi
@@ -43,12 +43,11 @@
     	google-chrome-stable "$(printf "$site" "$(echo "$searchTerm" | tr ' ' '+')")" 2>/dev/null &
     else
 	    local url="$(printf "$site" "$(echo "$searchTerm" | tr ' ' '+')")"
-	    eval "_asdfgh $(rofi -dmenu -p ":" < <(echo "$url" | python3 -c "import requests; from bs4 import BeautifulSoup; url = input(); [print('\\\"' + i.find('div', {'class' : 'result_title'}).a.text.replace('\n', '') + '\\\"' + ' ' + '\\\"' + i.find('div', {'class' : 'result_title'}).a['href'].split('&')[0].replace('search/r?entry=/', '') + '\\\"') for i in BeautifulSoup(requests.get(url).text).findAll('div', {'class': 'result_listing'})]"))"
+	    eval "_asdfgh $(fzf --layout=reverse < <(echo "$url" | python3 -c "import requests; from bs4 import BeautifulSoup; url = input(); [print('\\\"' + i.find('div', {'class' : 'result_title'}).a.text.replace('\n', '') + '\\\"' + ' ' + '\\\"' + i.find('div', {'class' : 'result_title'}).a['href'].split('&')[0].replace('search/r?entry=/', '') + '\\\"') for i in BeautifulSoup(requests.get(url).text).findAll('div', {'class': 'result_listing'})]"))"
     fi
 }
 function _asdfgh {
-	pandoc -s -r html "$2" --pdf-engine=xelatex -o /tmp/meh.pdf &&
-    evince /tmp/meh.pdf
+	google-chrome-stable "$2" 2>/dev/null &
 }
 function _search_hist_management {
     local historyFiles='/home/ellie/.config/,search'
@@ -59,4 +58,6 @@ function _search_hist_management {
 	    echo "$2" >> $historyFiles/$1
     fi
 }
-
+if [[ $ZSH_EVAL_CONTEXT == 'toplevel' ]]; then
+  elliesearch
+fi
