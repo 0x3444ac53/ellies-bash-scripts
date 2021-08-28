@@ -16,13 +16,17 @@ elliesearch(){
             "-p"|"--philosophy")
                 site="https://plato.stanford.edu/search/searcher.py?query=%s~"
                 pdfflag="kasldj"
+                if [[ "$2" == "--textoutput" ]]; then
+                    article_text_flag="set"
+                    shift
+                fi
                 ;;
             "-lg"|"--libgen")
                 site="https://libgen.is/search.php?req=%s&open=0&res=100&view=detailed"
                 ;;
  	    "-al"|"--anarchist-library")
 		site="http://theanarchistlibrary.org/search?query=%s"
-		;;
+    		;;
              "-h"|"--help")
                  _ellieSearchHelpText_
                  exit 2
@@ -51,7 +55,11 @@ elliesearch(){
     fi
 }
 function _asdfgh {
+    if [ -z $article_text_flag ]; then
 	google-chrome-stable "$2" 2>/dev/null &
+    else
+        python3 <(echo "import markdownify; import bs4; import requests\nwith requests.get('$2') as f: print(markdownify.markdownify('\\\n'.join([i.__str__() for i in bs4.BeautifulSoup(f.text, 'html.parser').find('div', {'id' : 'article-content'}).findAll('div') if i.get('id') in ['pubinfo', 'preamble', 'toc', 'main-text', 'bibliography', 'other-internet-resources', 'acknowledgments']]), heading_style='atx'))")
+    fi
 }
 function _search_hist_management {
     local historyFiles='/home/ellie/.config/,search'
