@@ -15,15 +15,19 @@ elliesearch(){
                 ;;
             "-p"|"--philosophy")
                 site="https://plato.stanford.edu/search/searcher.py?query=%s~"
-		            pdfflag="kasldj"
+                pdfflag="kasldj"
                 ;;
             "-lg"|"--libgen")
                 site="https://libgen.is/search.php?req=%s&open=0&res=100&view=detailed"
                 ;;
- 	          "-al"|"--anarchist-library")
-		            site="http://theanarchistlibrary.org/search?query=%s"
-		            ;;
-            *)
+ 	    "-al"|"--anarchist-library")
+		site="http://theanarchistlibrary.org/search?query=%s"
+		;;
+             "-h"|"--help")
+                 _ellieSearchHelpText_
+                 exit 2
+                ;;
+             *)
                 echo "unrecognised "$1" defaulting to search engine"
                 ;;
         esac
@@ -58,6 +62,22 @@ function _search_hist_management {
 	    echo "$2" >> $historyFiles/$1
     fi
 }
+function _ellieSearchHelpText_ {
+    cat << EOM
+elliesearch [opts] searchTerm
+
+options:
+    -y|--youbtube                            search youtube.com
+    -g|--google                              search with google (default)
+    -w|--wikipedia                           search wikipedia
+    -p|--philosophy                          search stanford.plato
+    -l|--libgen                              search libgen
+   -al|--anarchist-library                   search the anarchist library
+    -h|--help                                print this message and exit
+EOM
+}
+
 if [[ $ZSH_EVAL_CONTEXT == 'toplevel' ]]; then
-  elliesearch
+  elliesearch "$@"
 fi
+
