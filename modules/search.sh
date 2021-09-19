@@ -24,6 +24,10 @@ elliesearch(){
             "-al"|"--anarchist-library")
                 site="http://theanarchistlibrary.org/search?query=%s"
                 ;;
+            "-th"|"--text-heavy-search")
+                pdfflag="is not set"
+                site="https://search.marginalia.nu/search?query=%s"
+                ;;
             "-h"|"--help")
                 _ellieSearchHelpText_
                 exit 2
@@ -282,14 +286,22 @@ elliesearch(){
     if [ -z $pdfflag ]; then
         _asdfgh dummyArg $url
     else
-        eval "_asdfgh $(fzf --layout=reverse < <(echo "$url" | python3 -c "import requests; from bs4 import BeautifulSoup; url = input(); [print('\\\"' + i.find('div', {'class' : 'result_title'}).a.text.replace('\n', '') + '\\\"' + ' ' + '\\\"' + i.find('div', {'class' : 'result_title'}).a['href'].split('&')[0].replace('search/r?entry=/', '') + '\\\"') for i in BeautifulSoup(requests.get(url).text).findAll('div', {'class': 'result_listing'})]"))"
+        case $site in
+            'https://plato.stanford.edu/search/searcher.py?query=%s~')
+                eval "_asdfgh $(fzf --layout=reverse < <(echo "$url" | python3 -c "import requests; from bs4 import BeautifulSoup; url = input(); [print('\\\"' + i.find('div', {'class' : 'result_title'}).a.text.replace('\n', '') + '\\\"' + ' ' + '\\\"' + i.find('div', {'class' : 'result_title'}).a['href'].split('&')[0].replace('search/r?entry=/', '') + '\\\"') for i in BeautifulSoup(requests.get(url).text).findAll('div', {'class': 'result_listing'})]"))"
+                ;;
+            'https://search.marginalia.nu/search?query=%s')
+                _asdfgh $(echo "$url" | python3 -c 'import requests, bs4; [print("\n".join([[" :::: ".join(i[:-1]), i[-1]]][0]), end="\0") for i in map(lambda x : list(filter(lambda x: x, x.text.split("\n"))), bs4.BeautifulSoup(requests.get(input()).text).findAll("section", {"class":"search-result"}))]' | fzf --read0 --preview="echo {+}" --layout reverse)
+                ;;
+        esac
     fi
 }
 function _asdfgh {
+    
     if [ -z $article_text_flag ]; then
-        google-chrome-stable "$2" 2>/dev/null &
+        google-chrome-stable "$@[-1]" 2>/dev/null &
     else
-        pandoc -f html -t $textoutputFormat "$2" || echo "text output for this failed"
+        pandoc -f html -t $textoutputFormat "$@[-1]" || echo "text output for this failed"
     fi
 }
 function _search_hist_management {
