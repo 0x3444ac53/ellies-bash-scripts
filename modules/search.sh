@@ -305,7 +305,7 @@ function _asdfgh {
     fi
 }
 function _search_hist_management {
-    local historyFiles='/home/ellie/.config/,search'
+    local historyFiles="${HOME}/.config/,search"
     [ -f "$historyFiles/$1" ] || touch "$historyFiles/$1" ]
     if (( $# == 1 )); then
         tr '\n' $'\n' < "$historyFiles/$1" | tac | paste -s -d '\n'
