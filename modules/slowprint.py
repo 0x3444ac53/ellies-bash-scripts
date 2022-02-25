@@ -38,7 +38,7 @@ def ellieprint(x, sleeptime=.07, loadtime=True):
         x = x.center(os.get_terminal_size()[0])
     for i in x:
         progress += 1
-        print(i, flush=True, end='')
+        print(i, end='', flush=True)
         sleep(sleeptime if i != " " else .01)
         progressbar()
     print()
@@ -52,7 +52,7 @@ def progressbar():
     print("\0337", end='')  # Save cursor position
     print(f"\033[{lines};0f", end='')  # Move cursor to the bottom margin
     print('—'*counter + "→", end='')  # Write the date
-#    print(f"{counter=}, {progress=}, {ratio=}, {progress%ratio=}", end='')
+    #print(f"{counter=}, {progress=}, {ratio=}, {progress%ratio=}", end='')
     print("\0338", end='')  # Restore cursor position
 
 def main():
@@ -79,5 +79,9 @@ if __name__ == '__main__':
         except KeyboardInterrupt:
             ellieprint("\n\n\n")
             ellieprint("Goodbye!", sleeptime=.01, loadtime=False)
+        finally:
+            print(f"\0337\033[0;{lines}r\033[{lines};0f\033[0K\0338")
             exit(130)
+        
+    print(f"\0337\033[0;{lines}r\033[{lines};0f\033[0K\0338")
     exit(0)

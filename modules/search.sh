@@ -329,7 +329,7 @@ options:
 EOM
 }
 
-if [[ $ZSH_EVAL_CONTEXT == 'toplevel' ]]; then
+#if [[ $ZSH_EVAL_CONTEXT == 'toplevel' ]]; then
   elliesearch "$@"
-fi
+#fi
 
