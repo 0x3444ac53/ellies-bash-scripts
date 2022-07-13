@@ -1,0 +1,2 @@
+#!/bin/zsh
+kitty --class "elliessearchthingy" --config <(printf '%s\nremember_window_size false\ninitial_window_width 800\ninitial_window_height 400\nfont_family      Iosevka term' "$(head -n 2 ~/.config/kitty/kitty.conf)") --detach --hold  --execute /home/ellie/bin/ellies-bash-scripts/modules/search.sh 
