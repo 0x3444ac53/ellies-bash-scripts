@@ -1,5 +1,5 @@
 #!/bin/zsh
-elliesearch(){
+function elliesearch {
     local site
     local article_text_flag
     site="https://google.com/search?q=%s"
@@ -274,7 +274,7 @@ elliesearch(){
         done 
         local domain="$(echo "$site" | awk -F/ '{print $3}')"
         if [[ "$*" == "" ]]; then
-            searchTerm=$(fzf --layout=reverse --prompt="Search: " < <(_search_hist_management "$domain"))
+            searchTerm=$(fzf --print-query --layout=reverse --prompt="Search: " < <(_search_hist_management "$domain"))
         else
             searchTerm="$*"
         fi
@@ -329,7 +329,7 @@ options:
 EOM
 }
 
-#if [[ $ZSH_EVAL_CONTEXT == 'toplevel' ]]; then
+if [[ $ZSH_EVAL_CONTEXT == 'toplevel' ]]; then
   elliesearch "$@"
-#fi
+fi
 
