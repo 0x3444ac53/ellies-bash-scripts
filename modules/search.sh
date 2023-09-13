@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/run/current-system/sw/bin/zsh
 function elliesearch {
     local site
     local article_text_flag
@@ -299,7 +299,7 @@ function elliesearch {
 function _asdfgh {
     
     if [ -z $article_text_flag ]; then
-        google-chrome-stable "$@[-1]" 2>/dev/null &
+        firefox "$@[-1]" 2>/dev/null &
     else
         pandoc -f html -t $textoutputFormat "$@[-1]" || echo "text output for this failed"
     fi
