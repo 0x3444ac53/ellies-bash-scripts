@@ -1,4 +1,4 @@
-#!/run/current-system/sw/bin/zsh
+#!/bin/env zsh
 
 # or use wm array -- add any that need to be recognized
 wms=( sowm 2bwm 2wm 9wm aewm afterstep ahwm alopex amiwm antiwm awesome berry blackbox bspwm catwm clfswm ctwm cwm dminiwm dragonflywm dwm echinus \
