@@ -77,7 +77,7 @@ print-gpu()
 
 print-packages()
 {
-  packages=$(apt list --installed 2>/dev/null | wc -l)
+  packages=$(pacman -Qq | wc -l)
   color-echo 'PKG' "$packages"
 }
 
